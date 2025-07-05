@@ -1,10 +1,12 @@
 FROM php:8.4-fpm
 
-# Install system dependencies and PHP extensions (including sockets)
+# Install system dependencies and PHP extensions (including sockets + redis)
 RUN apt-get update && apt-get install -y \
     git curl zip unzip libpng-dev libonig-dev libxml2-dev \
     libzip-dev libpq-dev libjpeg-dev libfreetype6-dev \
     default-mysql-client \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd sockets
 
 # Allow Git to work in container without "dubious ownership" errors
