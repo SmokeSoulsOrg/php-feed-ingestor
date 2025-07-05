@@ -49,25 +49,33 @@ class IngestPornstarFeed extends Command
             'body' => substr($rawJson, 0, 500),
         ]);
 
-        // Detect and warn on known escape issues
-        if (preg_match('/\\\\(x|[^"\/bfnrtu0-9])/', $rawJson, $match)) {
-            Log::warning('[Feed Warning] Invalid escape sequence in feed', [
+        // Detect and warn on known invalid \x escape sequences
+        if (preg_match('/\\\\x[0-9A-Fa-f]{2}/', $rawJson, $match)) {
+            Log::warning('[Feed Warning] Invalid \\x escape sequence in feed', [
                 'example' => $match[0],
             ]);
         }
 
-        // Sanitize escape sequences: remove \x and other non-standard escapes
-        $sanitized = preg_replace('/\\\\(x|[^"\/bfnrtu0-9])/', '', $rawJson);
+        // Sanitize: remove invalid \xNN sequences (not valid JSON)
+        $cleaned = preg_replace('/\\\\x[0-9A-Fa-f]{2}/', '', $rawJson);
 
-        // Attempt to parse JSON
-        $data = json_decode($sanitized, true);
+        // Attempt to decode sanitized JSON
+        $data = json_decode($cleaned, true);
 
-        if (!is_array($data) || !isset($data['items']) || !is_array($data['items'])) {
-            Log::error('[Feed Error] JSON decoded but format is invalid or empty', [
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
+            Log::error('[Feed Error] Failed to decode sanitized JSON', [
                 'json_error' => json_last_error_msg(),
-                'raw' => substr($sanitized, 0, 500),
+                'raw' => substr($cleaned, 0, 500),
             ]);
-            $this->error("❌ Feed returned unexpected format or empty data.");
+            $this->error("❌ Feed could not be decoded correctly.");
+            return CommandAlias::FAILURE;
+        }
+
+        if (!isset($data['items']) || !is_array($data['items'])) {
+            Log::error('[Feed Error] JSON decoded but format is invalid or missing items array', [
+                'raw' => substr($cleaned, 0, 500),
+            ]);
+            $this->error("❌ Feed returned unexpected format.");
             return CommandAlias::FAILURE;
         }
 
@@ -75,7 +83,7 @@ class IngestPornstarFeed extends Command
         $this->info("Found " . count($items) . " items.");
 
         foreach ($items as $item) {
-            dispatch(new HandlePornstarFeedItem($item));
+            dispatch((new HandlePornstarFeedItem($item))->onQueue('ingest-items'));
         }
 
         $this->info("✅ All items dispatched to queue.");
