@@ -23,11 +23,11 @@ php artisan config:cache
 echo "🛠 Running migrations on primary..."
 php artisan migrate:fresh --force --database=sqlite
 
+echo "🛠 Creating queues by dispatching feed ingest job..."
+php artisan ingest-pornstar-feed
+
 echo "🛠 Running queues in background..."
 nohup php artisan queue:work --queue=image-download,pornstar-events > storage/logs/queue.log 2>&1 &
-
-echo "🛠 Running scheduled tasks..."
-php artisan schedule:run
 
 echo "✅ Done. Tailing application logs using Pail..."
 php artisan pail
