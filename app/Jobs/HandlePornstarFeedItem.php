@@ -16,6 +16,8 @@ class HandlePornstarFeedItem implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $queue = 'default';
+
     public array $item;
 
     public function __construct(array $item)

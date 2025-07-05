@@ -74,7 +74,7 @@ class IngestPornstarFeed extends Command
         $this->info("Found " . count($items) . " items.");
 
         foreach ($items as $item) {
-            dispatch(new \App\Jobs\HandlePornstarFeedItem($item));
+            dispatch(new HandlePornstarFeedItem($item));
         }
 
         $this->info("✅ All items dispatched to queue.");
