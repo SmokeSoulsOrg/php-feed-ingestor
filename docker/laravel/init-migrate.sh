@@ -3,6 +3,11 @@
 set -e
 cd /var/www/html
 
+echo "🔧 Ensuring SQLite database file exists..."
+mkdir -p database
+touch database/database.sqlite
+chown www-data:www-data database/database.sqlite
+
 echo "🔧 Changing .env ownership to www-data"
 chown www-data:www-data /var/www/html/.env
 
@@ -23,4 +28,3 @@ nohup php artisan queue:work > storage/logs/queue.log 2>&1 &
 
 echo "🛠 Running scheduled tasks..."
 php artisan schedule:run
-
