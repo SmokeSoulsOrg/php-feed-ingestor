@@ -28,3 +28,6 @@ nohup php artisan queue:work > storage/logs/queue.log 2>&1 &
 
 echo "🛠 Running scheduled tasks..."
 php artisan schedule:run
+
+echo "✅ Done. Tailing application logs using Pail..."
+php artisan pail
