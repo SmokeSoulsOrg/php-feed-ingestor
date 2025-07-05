@@ -24,7 +24,7 @@ echo "🛠 Running migrations on primary..."
 php artisan migrate:fresh --force --database=sqlite
 
 echo "🛠 Running queues in background..."
-nohup php artisan queue:work > storage/logs/queue.log 2>&1 &
+nohup php artisan queue:work --queue=image-download,pornstar-events > storage/logs/queue.log 2>&1 &
 
 echo "🛠 Running scheduled tasks..."
 php artisan schedule:run

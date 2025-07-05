@@ -27,21 +27,7 @@ abstract class BasePublisher
         $this->channel = $connection->channel();
         $this->queue = $this->getQueueName();
 
-        // Declare the queue this publisher will use
         $this->channel->queue_declare($this->queue, false, true, false, false);
-
-        // 🔁 Declare all other known queues (safe if already exist)
-        $knownQueues = array_unique([
-            'default',
-            config('services.rabbitmq.pornstar_queue', 'pornstar-events'),
-            config('services.rabbitmq.image_queue', 'image-download'),
-        ]);
-
-        foreach ($knownQueues as $q) {
-            if ($q !== $this->queue) {
-                $this->channel->queue_declare($q, false, true, false, false);
-            }
-        }
     }
 
     abstract protected function getQueueName(): string;

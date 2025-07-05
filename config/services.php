@@ -20,8 +20,7 @@ return [
         'port' => env('RABBITMQ_PORT', 5672),
         'user' => env('RABBITMQ_USER', 'guest'),
         'password' => env('RABBITMQ_PASSWORD', 'guest'),
-        'image_queue' => env('RABBITMQ_QUEUE_IMAGE', 'image-download'),
-        'pornstar_queue' => env('RABBITMQ_QUEUE_PORNSTAR', 'pornstar-events'),
+        'queue' => env('RABBITMQ_QUEUE', 'default'),
     ],
 
     'api' => [

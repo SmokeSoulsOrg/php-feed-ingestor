@@ -24,11 +24,6 @@ class HandlePornstarFeedItem implements ShouldQueue
         $this->item = $item;
     }
 
-    public function viaQueue(): string
-    {
-        return 'default';
-    }
-
     public function handle(): void
     {
         $pornstar = $this->item;
