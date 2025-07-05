@@ -7,9 +7,10 @@ RUN apt-get update && apt-get install -y \
     default-mysql-client \
     && pecl install redis \
     && docker-php-ext-enable redis \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd sockets
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd sockets \
+    && echo "memory_limit=-1" > /usr/local/etc/php/conf.d/99-memory.ini
 
-# Allow Git to work in container without "dubious ownership" errors
+# Avoid Git "dubious ownership" errors inside container
 RUN git config --global --add safe.directory /var/www/html
 
 # Install Composer
@@ -24,15 +25,12 @@ COPY . .
 # Temporary .env to allow Composer scripts to run
 COPY .env.example .env
 
-# Set permissions and make init script executable
+# Permissions and executable init script
 RUN chown -R www-data:www-data /var/www/html \
     && chmod +x docker/laravel/init-migrate.sh
 
-# Install PHP dependencies
+# Install Composer dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Entrypoint runs Laravel initialization and background workers
+# Entrypoint runs Laravel bootstrap + background workers
 ENTRYPOINT ["./docker/laravel/init-migrate.sh"]
-
-# FPM process (not used if background tasks only, but kept for compatibility)
-CMD ["php-fpm"]
