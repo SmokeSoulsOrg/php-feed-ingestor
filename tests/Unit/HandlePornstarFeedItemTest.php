@@ -6,7 +6,6 @@ use App\Jobs\HandlePornstarFeedItem;
 use App\Services\ImagePublisher;
 use App\Services\PornstarPublisher;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class HandlePornstarFeedItemTest extends TestCase

@@ -129,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     #    needs: [laravel-tests, code-quality] ignore code-quality because I won't have time to fix them all
     needs: laravel-tests
-    if: always()
+    if: success()
 
     permissions:
       packages: write
