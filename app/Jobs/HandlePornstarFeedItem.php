@@ -31,7 +31,7 @@ class HandlePornstarFeedItem implements ShouldQueue
 
         // 1. Publish pornstar metadata to RabbitMQ
         try {
-            (new PornstarPublisher())->publish($pornstar);
+            app(PornstarPublisher::class)->publish($pornstar);
             Log::info("[HandlePornstarFeedItem] Published pornstar {$name} to 'pornstar-events'");
         } catch (\Throwable $e) {
             Log::error('[HandlePornstarFeedItem] Failed to publish pornstar metadata', [
@@ -60,7 +60,7 @@ class HandlePornstarFeedItem implements ShouldQueue
                     ];
 
                     try {
-                        (new ImagePublisher())->publish($payload);
+                        app(ImagePublisher::class)->publish($payload);
                         Log::info("[HandlePornstarFeedItem] Published image job for URL: {$url}");
                     } catch (\Throwable $e) {
                         Log::error('[HandlePornstarFeedItem] Failed to publish image job', [
