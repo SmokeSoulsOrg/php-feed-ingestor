@@ -54,13 +54,13 @@ class IngestPornstarFeedTest extends TestCase
 
         $this->artisan('ingest-pornstar-feed')
             ->expectsOutput('Fetching feed from: https://fake-broken.test')
-            ->expectsOutput('❌ Feed returned unexpected format or empty data.')
+            ->expectsOutput('❌ Feed could not be decoded correctly.')
             ->assertExitCode(1);
 
         // Then get the spy and assert log call
         Log::getFacadeRoot()
             ->shouldHaveReceived('error')
-            ->with('[Feed Error] JSON decoded but format is invalid or empty', \Mockery::type('array'))
+            ->with('[Feed Error] Failed to decode sanitized JSON', \Mockery::type('array'))
             ->once();
     }
 }
