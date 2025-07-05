@@ -124,34 +124,34 @@ jobs:
         run: |
           php artisan pint --test
 
-#  build-and-push:
-#    name: Build and Push Laravel Docker Image
-#    runs-on: ubuntu-latest
-#    #    needs: [laravel-tests, code-quality] ignore code-quality because I won't have time to fix them all
-#    needs: laravel-tests
-#    if: always()
-#
-#    permissions:
-#      packages: write
-#      contents: read
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Set up Docker Buildx
-#        uses: docker/setup-buildx-action@v2
-#
-#      - name: Log in to GitHub Container Registry
-#        uses: docker/login-action@v2
-#        with:
-#          registry: ghcr.io
-#          username: ${{ github.actor }}
-#          password: ${{ secrets.GITHUB_TOKEN }}
-#
-#      - name: Build and Push Docker Image
-#        uses: docker/build-push-action@v5
-#        with:
-#          context: .
-#          file: ./Dockerfile
-#          push: true
-#          tags: ghcr.io/smokesoulsorg/php-feed-ingestor:latest
+  build-and-push:
+    name: Build and Push Laravel Docker Image
+    runs-on: ubuntu-latest
+    #    needs: [laravel-tests, code-quality] ignore code-quality because I won't have time to fix them all
+    needs: laravel-tests
+    if: always()
+
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ghcr.io/smokesoulsorg/php-feed-ingestor:latest
