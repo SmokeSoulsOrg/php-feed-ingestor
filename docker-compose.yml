@@ -45,3 +45,7 @@ services:
 networks:
     sail:
         driver: bridge
+
+volumes:
+    redis_data:
+        driver: local
