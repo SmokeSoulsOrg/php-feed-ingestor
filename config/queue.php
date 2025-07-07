@@ -40,6 +40,7 @@ return [
             'port' => env('RABBITMQ_PORT', 5672),
             'username' => env('RABBITMQ_USER', 'guest'),
             'queue' => env('RABBITMQ_QUEUE', 'ingest-items'),
+            'declare_queues' => true,
         ],
 
         'database' => [
