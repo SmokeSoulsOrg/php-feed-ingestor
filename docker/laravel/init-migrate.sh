@@ -23,6 +23,13 @@ php artisan config:cache
 echo "🛠 Running migrations on primary..."
 php artisan migrate:fresh --force --database=sqlite
 
+echo "⏳ Waiting for RabbitMQ..."
+until nc -z rabbitmq 5672; do
+  echo "🔁 Waiting for rabbitmq..."
+  sleep 1
+done
+echo "✅ RabbitMQ is ready."
+
 echo "🛠 Creating queues by dispatching feed ingest job..."
 php artisan ingest-pornstar-feed
 
